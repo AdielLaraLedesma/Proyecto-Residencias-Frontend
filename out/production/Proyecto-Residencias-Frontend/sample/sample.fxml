@@ -31,5 +31,6 @@
       <Label fx:id="labelName" layoutX="249.0" layoutY="22.0" text="Label" visible="false" />
       <Label fx:id="labelInicio" layoutX="215.0" layoutY="51.0" text="Label" visible="false" />
       <Label fx:id="labelFinal" layoutX="249.0" layoutY="75.0" text="Label" visible="false" />
+      <TextField fx:id="TextName" layoutX="89.0" layoutY="474.0" prefHeight="25.0" prefWidth="579.0" />
    </children>
 </Pane>
