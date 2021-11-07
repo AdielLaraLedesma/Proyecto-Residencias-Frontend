@@ -1,0 +1,15 @@
+.btnSeleccionado {
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+    -fx-border-color: #000000;
+    -fx-background-radius: 50px;
+
+}
+
+.btn {
+    -fx-border-radius: 10px;
+    -fx-border-width: 2px;
+    -fx-background-radius: 50px;
+ 
+}
+
