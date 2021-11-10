@@ -66,7 +66,7 @@ public class Participante {
 
     @Override
     public String toString() {
-        return "Participante{" +
+        return "{" +
                 "nombreCompleto='" + nombreCompleto + '\'' +
                 ", horaUnion='" + horaUnion + '\'' +
                 ", horaSalida='" + horaSalida + '\'' +

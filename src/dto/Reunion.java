@@ -90,14 +90,14 @@ public class Reunion {
 
     @Override
     public String toString() {
-        return "Reunion{" +
-                "idReunion=" + idReunion +
-                ", numeroParticipantes='" + numeroParticipantes + '\'' +
-                ", titulo='" + titulo + '\'' +
-                ", horaInicio='" + horaInicio + '\'' +
-                ", horaFin='" + horaFin + '\'' +
-                ", idDepuracion='" + idDepuracion + '\'' +
-                ", participantes=" + participantes +
+        return "{" +
+                "\"idReunion\": " + idReunion + "," +
+                "\" numeroParticipantes\": " + numeroParticipantes + ',' +
+                "\" titulo\": " + titulo + ',' +
+                "\" horaInicio\": " + horaInicio + ',' +
+                "\" horaFin\": " + horaFin + ',' +
+                "\" idDepuracion\": " + idDepuracion + + ',' +
+                "\" participantes\": " + participantes +
                 '}';
     }
 }

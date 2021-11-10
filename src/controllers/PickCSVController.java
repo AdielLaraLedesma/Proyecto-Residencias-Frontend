@@ -1,6 +1,7 @@
 package controllers;
 
 import dto.Participante;
+import dto.dtoPrueba;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,6 +13,7 @@ import javafx.stage.FileChooser;
 
 import dto.Reunion;
 import utils.DateUtils;
+import utils.HttpRequestUtils;
 import utils.SceneUtils;
 import utils.StringUtils;
 
@@ -27,6 +29,8 @@ import java.util.ResourceBundle;
 
 
 public class PickCSVController extends PadreController{
+
+    private HttpRequestUtils requestUtils = new HttpRequestUtils();
 
     //DTO
     private Reunion reunion = new Reunion();
@@ -139,6 +143,7 @@ public class PickCSVController extends PadreController{
         if( cboxConfirmar.isSelected() ) {
 
             //Envar POST al backend que solo valida las asistencias
+            requestUtils.postValidateAttendance(new dtoPrueba(reunion.getTitulo().toString()));
 
             sceneUtils.loadStage("/views/confirmAttendanceView.fxml", actionEvent, reunion);
 
