@@ -153,6 +153,8 @@ public class PickCSVController extends PadreController{
         //Enviar POST al backend
         requestUtils.postTakeAttendance(reunion, false);
 
+        sceneUtils.loadStage("/views/principalView.fxml", actionEvent, null);
+
 
     }
 

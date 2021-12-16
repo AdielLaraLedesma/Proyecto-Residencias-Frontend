@@ -66,6 +66,8 @@ public class ConfirmAttendanceController extends PadreController{
         //Aqui llamar el POST del backend para guardar asistencia.
         requestUtils.postConfirmAttendance(reunion);
 
+        sceneUtils.loadStage("/views/principalView.fxml", actionEvent);
+
     }
 
 
