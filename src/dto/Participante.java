@@ -67,12 +67,13 @@ public class Participante {
     @Override
     public String toString() {
         return "{" +
-                "nombreCompleto='" + nombreCompleto + '\'' +
-                ", horaUnion='" + horaUnion + '\'' +
-                ", horaSalida='" + horaSalida + '\'' +
-                ", duracion='" + duracion + '\'' +
-                ", email='" + email + '\'' +
-                ", rol='" + rol + '\'' +
+                "\"nombreCompleto\": \"" + nombreCompleto + "\"," +
+                "\"horaUnion\": \"" + horaUnion + "\"," +
+                "\"horaSalida\": \"" + horaSalida + "\"," +
+                "\"duracion\": \"" + duracion + "\"," +
+                "\"email\": \"" + email + "\"," +
+                "\"rol\": \"" + rol +  "\" ," +
+                "\"asistencia\":" + asistencia +  " " +
                 '}';
     }
 }

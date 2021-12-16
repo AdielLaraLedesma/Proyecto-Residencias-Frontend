@@ -9,7 +9,6 @@ public class DateUtils {
 
     public Date castStringtoDate(String stringDate){
         try{
-            System.out.println(stringDate);
             SimpleDateFormat format = null;
             if(stringDate.length() == 18){
                 format=new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");

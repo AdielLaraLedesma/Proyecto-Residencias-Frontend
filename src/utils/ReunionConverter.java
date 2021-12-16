@@ -8,7 +8,7 @@ public class ReunionConverter extends StringConverter<Reunion> {
 
     @Override
     public String toString(Reunion object) {
-        return object == null ? "" : object.getTitulo() + ' ' + object.getNumeroParticipantes() + ' ' + object.getIdDepuracion();
+        return object == null ? "" : object.getTitulo() + "\n " + object.getNumeroParticipantes() + " \n " + object.getIdDepuracion();
     }
 
     @Override

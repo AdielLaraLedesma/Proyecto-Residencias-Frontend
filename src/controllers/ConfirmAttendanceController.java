@@ -11,12 +11,15 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import utils.HttpRequestUtils;
 import utils.SceneUtils;
 
 
 import java.util.List;
 
 public class ConfirmAttendanceController extends PadreController{
+
+    private HttpRequestUtils requestUtils = new HttpRequestUtils();
 
     //Objeto obtenido al llamar ventana
     private Reunion reunion = new Reunion();
@@ -61,7 +64,7 @@ public class ConfirmAttendanceController extends PadreController{
 
     public void eventConfirmar(ActionEvent actionEvent) {
         //Aqui llamar el POST del backend para guardar asistencia.
-
+        requestUtils.postConfirmAttendance(reunion);
 
     }
 

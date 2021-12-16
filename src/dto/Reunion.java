@@ -1,11 +1,15 @@
 package dto;
 
+import com.sun.xml.internal.ws.wsdl.writer.document.Part;
+import utils.StringUtils;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Reunion {
 
     //idReunion sera igual a 1 mientras se implemente el BACKEND
-    private int idReunion = 1;
+    private int id = 1;
 
     private String numeroParticipantes;
 
@@ -23,7 +27,7 @@ public class Reunion {
     }
 
     public Reunion(int idReunion, String numeroParticipantes, String titulo, String horaInicio, String horaFin, String idDepuracion, List<Participante> participantes) {
-        this.idReunion = idReunion;
+        this.id = idReunion;
         this.numeroParticipantes = numeroParticipantes;
         this.titulo = titulo;
         this.horaInicio = horaInicio;
@@ -80,24 +84,55 @@ public class Reunion {
         this.idDepuracion = idDepuracion;
     }
 
-    public int getIdReunion() {
-        return idReunion;
+    public int getId() {
+        return id;
     }
 
-    public void setIdReunion(int idReunion) {
-        this.idReunion = idReunion;
+    public void setId(int id) {
+        this.id = id;
     }
+
 
     @Override
     public String toString() {
-        return "{" +
-                "\"idReunion\": " + idReunion + "," +
-                "\" numeroParticipantes\": " + numeroParticipantes + ',' +
-                "\" titulo\": " + titulo + ',' +
-                "\" horaInicio\": " + horaInicio + ',' +
-                "\" horaFin\": " + horaFin + ',' +
-                "\" idDepuracion\": " + idDepuracion + + ',' +
-                "\" participantes\": " + participantes +
+        return "{\"id\":" + id + "," +
+                "\"numeroParticipantes\": \"" + numeroParticipantes + "\"," +
+                "\"titulo\": \"" + titulo + "\"," +
+                "\"horaInicio\": \"" + horaInicio + "\"," +
+                "\"horaFin\": \"" + horaFin + "\"," +
+                "\"idDepuracion\": \"" + idDepuracion + "\"," +
+                "\"participantes\": " + participantes + "" +
                 '}';
     }
+
+
+
+    public Reunion format(){
+        Reunion reunion = new Reunion();
+        reunion.setId(this.id);
+        reunion.setNumeroParticipantes(StringUtils.replaceSpecialtyStr(this.numeroParticipantes));
+        reunion.setTitulo(StringUtils.replaceSpecialtyStr(this.titulo));
+        reunion.setHoraInicio(StringUtils.replaceSpecialtyStr(this.horaInicio));
+        reunion.setHoraFin(StringUtils.replaceSpecialtyStr(this.horaFin));
+        reunion.setIdDepuracion(StringUtils.replaceSpecialtyStr(this.idDepuracion));
+
+
+        List<Participante> participantes = new ArrayList();
+        this.participantes.forEach( element -> {
+            participantes.add(new Participante(
+                            StringUtils.replaceSpecialtyStr(element.getNombreCompleto()),
+                            StringUtils.replaceSpecialtyStr(element.getHoraUnion()),
+                            StringUtils.replaceSpecialtyStr(element.getHoraSalida()),
+                            StringUtils.replaceSpecialtyStr(element.getDuracion()),
+                            StringUtils.replaceSpecialtyStr(element.getEmail()),
+                            StringUtils.replaceSpecialtyStr(element.getRol()),
+                            element.isAsistencia()));
+        });
+        reunion.setParticipantes(participantes);
+
+
+        return reunion;
+    }
+
+
 }

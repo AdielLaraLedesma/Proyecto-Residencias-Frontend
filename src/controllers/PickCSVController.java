@@ -142,14 +142,16 @@ public class PickCSVController extends PadreController{
 
         if( cboxConfirmar.isSelected() ) {
 
+
             //Envar POST al backend que solo valida las asistencias
-            requestUtils.postValidateAttendance(new dtoPrueba(reunion.getTitulo().toString()));
+            reunion = requestUtils.postTakeAttendance(reunion, true);
 
             sceneUtils.loadStage("/views/confirmAttendanceView.fxml", actionEvent, reunion);
 
             return;
         }
         //Enviar POST al backend
+        requestUtils.postTakeAttendance(reunion, false);
 
 
     }

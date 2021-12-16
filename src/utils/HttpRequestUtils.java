@@ -1,5 +1,6 @@
 package utils;
 
+import dto.Participante;
 import dto.Reunion;
 import dto.dtoPrueba;
 import org.json.JSONArray;
@@ -11,35 +12,30 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HttpRequestUtils {
 
     private static HttpURLConnection connection;
 
-    public void postValidateAttendance(dtoPrueba dtoPrueba){
+    private String API = "http://localhost:8080/";
+
+    public Reunion postTakeAttendance(Reunion reunion, boolean revisarAsistencia){
         BufferedReader reader;
         String line;
         StringBuffer responseContent = new StringBuffer();
 
         try {
-            URL url = new URL("http://localhost:8080/Prueba");
-            connection = (HttpURLConnection) url.openConnection();
-
-            //Request setup
-            connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
-
-            connection.setRequestProperty("Accept", "application/json");
-            connection.setRequestProperty("Content-Type", "application/json");
-
-            connection.setDoOutput(true);
+            URL url = revisarAsistencia ? new URL(API + "revisarAsistencia?revisarAsistencia=true") : new URL(API + "revisarAsistencia?revisarAsistencia=false");
+            connection = createConnection(url, "POST");
             OutputStream outStream = connection.getOutputStream();
             OutputStreamWriter outStreamWriter = new OutputStreamWriter(outStream, "UTF-8");
-            //outStreamWriter.write(JSONObject.valueToString(dtoPrueba));
-            outStreamWriter.write(createJson(dtoPrueba).toString());
-            System.out.println(createJson(dtoPrueba).toString());
+
+
+            Reunion prueba = reunion.format();
+
+            outStreamWriter.write(prueba.toString());
             outStreamWriter.flush();
             outStreamWriter.close();
             outStream.close();
@@ -59,10 +55,53 @@ public class HttpRequestUtils {
                     responseContent.append(line);
                 }
                 reader.close();
-            }
-            //parseSuccess(responseContent.toString());
-            System.out.println(responseContent.toString());
 
+                reunion = revisarAsistencia ? parseSuccessReunion("[" + responseContent.toString() + "]") : null;
+            }
+
+
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            connection.disconnect();
+        }
+        return reunion;
+    }
+
+    public void postConfirmAttendance(Reunion reunion){
+        BufferedReader reader;
+        String line;
+        StringBuffer responseContent = new StringBuffer();
+
+        try {
+            URL url = new URL(API + "confirmarAsistencia");
+            connection = createConnection(url, "POST");
+            OutputStream outStream = connection.getOutputStream();
+            OutputStreamWriter outStreamWriter = new OutputStreamWriter(outStream, "UTF-8");
+
+
+            Reunion prueba = reunion.format();
+
+            outStreamWriter.write(prueba.toString());
+            outStreamWriter.flush();
+            outStreamWriter.close();
+            outStream.close();
+
+
+            int status = connection.getResponseCode();
+
+            if (status > 299)
+                reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
+            else
+                reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+            while ((line = reader.readLine()) != null){
+                responseContent.append(line);
+            }
+            reader.close();
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -73,79 +112,135 @@ public class HttpRequestUtils {
         }
     }
 
+    public List<Reunion> getAttendances() {
 
-
-    public void Prueba(){
+        List<Reunion> reuniones = new ArrayList();
 
         BufferedReader reader;
         String line;
         StringBuffer responseContent = new StringBuffer();
 
         try {
-            URL url = new URL("https://jsonplaceholder.typicode.com/albums");
-            connection = (HttpURLConnection) url.openConnection();
+            URL url = new URL(API + "obtener-reuniones");
+            connection = createConnection(url, "GET");
 
-            //Request setup
-            connection.setRequestMethod("GET");
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
+            OutputStream outStream = connection.getOutputStream();
+            OutputStreamWriter outStreamWriter = new OutputStreamWriter(outStream, "UTF-8");
+
+            outStreamWriter.flush();
+            outStreamWriter.close();
+            outStream.close();
+
 
             int status = connection.getResponseCode();
 
-            if (status > 299){
+            if (status > 299) {
                 reader = new BufferedReader(new InputStreamReader(connection.getErrorStream()));
-                while ((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     responseContent.append(line);
                 }
                 reader.close();
-            }else{
+            } else {
                 reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                while ((line = reader.readLine()) != null){
+                while ((line = reader.readLine()) != null) {
                     responseContent.append(line);
                 }
                 reader.close();
+                reuniones = parseSucessReuniones(responseContent.toString());
             }
-            parseSuccess(responseContent.toString());
-
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             connection.disconnect();
         }
-
-
+        return reuniones;
     }
 
-    //public static void main(String[] args) {
-    //    new HttpRequestUtils().postValidateAttendance(null);
-    //}
+    public HttpURLConnection createConnection(URL url, String type) {
+        try{
+            connection = (HttpURLConnection) url.openConnection();
 
-    public String parseSuccess(String responseBody){
-        JSONArray albums = new JSONArray(responseBody);
-        for (int i = 0; i < albums.length(); i++){
-            JSONObject album = albums.getJSONObject(i);
-            int id = album.getInt("id");
-            int userId = album.getInt("userId");
-            String title = album.getString("title");
-            System.out.println(id + " " + title + " " + userId);
+            //Request setup
+            connection.setDoOutput(true);
+            connection.setRequestMethod(type);
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+
+            connection.setRequestProperty("Accept", "application/json");
+            connection.setRequestProperty("Content-Type", "application/json");
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return null;
+        return connection;
     }
 
-    public JSONObject createJson(dtoPrueba dtoPrueba){
-        JSONObject json = new JSONObject();
+    public List<Reunion> parseSucessReuniones(String responseBody){
 
-        String prueba = dtoPrueba.titulo.toString();
+        List<Reunion> reuniones = new ArrayList();
 
-        prueba = prueba.replace("\u0000", "");
-        prueba = prueba.replace("\\u0000", "");
-        json.put("title", prueba);
-
-        return json;
+        JSONArray JSONresponse = new JSONArray(responseBody);
+        for (int i = 0; i < JSONresponse.length(); i++) {
+            JSONObject JSONReunion = JSONresponse.getJSONObject(i);
+            reuniones.add(parseSuccessReunion("[" + JSONReunion.toString() + "]"));
+        }
+        return reuniones;
     }
 
+
+
+    public Reunion parseSuccessReunion(String responseBody){
+
+        Reunion reunion = new Reunion();
+
+        JSONArray JSONresponse = new JSONArray(responseBody);
+        JSONObject JSONreunion = JSONresponse.getJSONObject(0);
+        int id = JSONreunion.getInt("id");
+        int numeroParticipantes = JSONreunion.getInt("numeroParticipantes");
+        String titulo = JSONreunion.getString("titulo");
+        String horaInicio = JSONreunion.getString("horaInicio");
+        String horaFin = JSONreunion.getString("horaFin");
+        String idDepuracion = JSONreunion.getString("idDepuracion");
+
+        List<Participante> participantes = new ArrayList();
+
+        JSONArray JSONparticipantes = JSONreunion.getJSONArray("participantes");
+        for (int i = 0; i < JSONparticipantes.length(); i++){
+            JSONObject JSONparticipante = JSONparticipantes.getJSONObject(i);
+            String nombreCompleto = JSONparticipante.getString("nombreCompleto");
+            String horaUnion = JSONparticipante.getString("horaUnion");
+            String horaSalida = JSONparticipante.getString("horaSalida");
+            String duracion = JSONparticipante.getString("duracion");
+            String email = JSONparticipante.getString("email");
+            String rol = JSONparticipante.getString("rol");
+            boolean asistencia = JSONparticipante.getBoolean("asistencia");
+
+            participantes.add(new Participante(
+                    nombreCompleto,
+                    horaUnion,
+                    horaSalida,
+                    duracion,
+                    email,
+                    rol,
+                    asistencia
+                    //true
+            ));
+            reunion.setId(id);
+            reunion.setNumeroParticipantes(String.valueOf(numeroParticipantes));
+            reunion.setTitulo(titulo);
+            reunion.setHoraInicio(horaInicio);
+            reunion.setHoraFin(horaFin);
+            reunion.setIdDepuracion(idDepuracion);
+
+            reunion.setParticipantes(participantes);
+        }
+        return reunion;
+    }
 
 }
